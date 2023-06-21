@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "WeatherReport",
+	"Description": "Retrieve live weather data.",
+	"Category": "Other",
+	"CreatedBy": "juji-dev",
+	"CreatedByURL": "https://www.juji.info",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "WeatherReport",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
