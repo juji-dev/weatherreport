@@ -1,5 +1,7 @@
 # UE4 Weather Report Plugin
 
+![Weather Report Icon](Resources/Icon128.png)
+
 The UE4 Weather Report Plugin is a small custom plugin for Unreal Engine 5.2+ that allows you to retrieve Weather Report data based on geo-location information (latitude and longitude) using the Open-meteo API. With this plugin, you can easily bring Weather Report data into your UE4 projects.
 
 ## Features
@@ -33,5 +35,5 @@ The UE4 Weather Report Plugin was developed by Juji-Dev and is inspired by the h
 
 ## Feedback and Contributions
 Feedback, bug reports, and contributions are welcome! If you encounter any issues or have suggestions for improvement, please open an issue on the GitHub repository.
-
+-----------------------------
 With the UE4 Weather Report Report Plugin, integrating Weather Report data into your Unreal Engine 4 projects has never been easier!
