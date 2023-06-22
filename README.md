@@ -29,7 +29,7 @@ The UE4 Weather Report Plugin is a small custom plugin for Unreal Engine 5.2+ th
 - Bind to OnWeatherReportEvent for a weather report response.
 
 ## Credits
-The UE4 Weather Report Plugin was developed by [Your Name] and is inspired by the Open-meteo API.
+The UE4 Weather Report Plugin was developed by Juji-Dev and is inspired by the https://open-meteo.com/
 
 ## Feedback and Contributions
 Feedback, bug reports, and contributions are welcome! If you encounter any issues or have suggestions for improvement, please open an issue on the GitHub repository.
