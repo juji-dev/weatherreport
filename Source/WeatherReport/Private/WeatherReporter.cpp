@@ -1,3 +1,4 @@
+
 #include "WeatherReporter.h"
 
 const float LTMX = 90;
@@ -52,10 +53,27 @@ void AWeatherReporter::ProcessWeatherReportResponse(FHttpRequestPtr request, FHt
     {
         FString contentStr = response->GetContentAsString();
         UE_LOG(LogTemp, Warning, TEXT("Weather Report Sucessful. Unprocessed: %s"), *contentStr);
-		
-		// TODO Convert to JSON and extract current weather.
-		// TODO Broadcast Dictionary or JSON object
-		OnWeatherReportEvent.Broadcast(contentStr);
+
+ 		TSharedPtr<FJsonObject> JsonObject;
+		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(contentStr);
+    	FJsonSerializer::Deserialize(JsonReader, JsonObject);
+
+		if(JsonObject.IsValid())
+		{
+			if (JsonObject->HasField("current_weather"))
+			{
+				const TSharedPtr<FJsonObject>& CurrentWeatherObject = JsonObject->GetObjectField("current_weather");
+				FWeatherReportData weatherReportData;
+
+				CurrentWeatherObject->TryGetStringField("time", weatherReportData.time);
+				CurrentWeatherObject->TryGetNumberField("temperature", weatherReportData.temperature);
+				CurrentWeatherObject->TryGetNumberField("weathercode", weatherReportData.weathercode);
+				CurrentWeatherObject->TryGetNumberField("windspeed", weatherReportData.windspeed);
+				CurrentWeatherObject->TryGetNumberField("winddirection", weatherReportData.winddirection);
+			
+				OnWeatherReportDelegate.Broadcast(weatherReportData);
+			}
+		}
     }
     else
     {

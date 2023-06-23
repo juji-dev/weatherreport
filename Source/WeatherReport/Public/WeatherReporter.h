@@ -8,10 +8,27 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Json.h"
+#include "JsonUtilities.h"
 #include "WeatherReporter.generated.h"
 
-// TODO Broadcast Dictionary or JSON object with current weather
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStringWeatherReportEvent, FString, WeatherReportString);
+USTRUCT(BlueprintType)
+struct FWeatherReportData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float temperature;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int weathercode;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float windspeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float winddirection;
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeatherReportResponseDelegate, const FWeatherReportData&, weatherReportData);
 
 UCLASS()
 class WEATHERREPORT_API AWeatherReporter : public AActor
@@ -25,9 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta= (Category = "Weather Report Request"))
 	bool WeatherReportHttpRequest(const float &latitude, const float& longitude, FString& errormsg);
 
-	// TODO replace with dictionary or JSON object with current weather
 	UPROPERTY(BlueprintAssignable, meta= (Category = "Weather Report Event"))
-	FStringWeatherReportEvent OnWeatherReportEvent;
+	FWeatherReportResponseDelegate OnWeatherReportDelegate;
 
 protected:
 	// Called when the game starts or when spawned
