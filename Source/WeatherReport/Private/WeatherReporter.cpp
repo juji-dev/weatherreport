@@ -26,43 +26,43 @@ bool AWeatherReporter::WeatherReportHttpRequest(const float &latitude, const flo
 {
 	errormsg = "";
 	bool isValidParams = !(latitude < LTMN || latitude > LTMX || longitude < LNMN || longitude > LNMX);
-	if(!isValidParams)
+	if (!isValidParams)
 	{
 		errormsg += "Invalid parameters, check latitiude and longitude does not over or under flow range. Lat(-90, 90), Long(-180, 180)";
 		return false;
 	}
 	FString currentWeather = "true";
-	FString requestURL =  WEATHER_API_URL + TEXT("?latitude=") + FString::SanitizeFloat(latitude) + TEXT("&longitude=") + FString::SanitizeFloat(longitude) + TEXT("&current_weather=") + currentWeather;
+	FString requestURL = WEATHER_API_URL + TEXT("?latitude=") + FString::SanitizeFloat(latitude) + TEXT("&longitude=") + FString::SanitizeFloat(longitude) + TEXT("&current_weather=") + currentWeather;
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> WeatherHttpRequest = FHttpModule::Get().CreateRequest();
-    WeatherHttpRequest->SetVerb(TEXT("GET"));
-    WeatherHttpRequest->SetURL(requestURL);
+	WeatherHttpRequest->SetVerb(TEXT("GET"));
+	WeatherHttpRequest->SetURL(requestURL);
 
-	    // Set the completion callback
-    WeatherHttpRequest->OnProcessRequestComplete().BindUObject(this, &AWeatherReporter::ProcessWeatherReportResponse);
+	// Set the completion callback
+	WeatherHttpRequest->OnProcessRequestComplete().BindUObject(this, &AWeatherReporter::ProcessWeatherReportResponse);
 
-    // Send the request
-    WeatherHttpRequest->ProcessRequest();
-		
-    return true;
+	// Send the request
+	WeatherHttpRequest->ProcessRequest();
+
+	return true;
 }
 
 void AWeatherReporter::ProcessWeatherReportResponse(FHttpRequestPtr request, FHttpResponsePtr response, bool bWasSuccessful)
 {
 	if (bWasSuccessful && response.IsValid())
-    {
-        FString contentStr = response->GetContentAsString();
-        UE_LOG(LogTemp, Warning, TEXT("Weather Report Sucessful. Unprocessed: %s"), *contentStr);
+	{
+		FString contentStr = response->GetContentAsString();
+		UE_LOG(LogTemp, Warning, TEXT("Weather Report Sucessful. Unprocessed: %s"), *contentStr);
 
- 		TSharedPtr<FJsonObject> JsonObject;
+		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(contentStr);
-    	FJsonSerializer::Deserialize(JsonReader, JsonObject);
+		FJsonSerializer::Deserialize(JsonReader, JsonObject);
 
-		if(JsonObject.IsValid())
+		if (JsonObject.IsValid())
 		{
 			if (JsonObject->HasField("current_weather"))
 			{
-				const TSharedPtr<FJsonObject>& CurrentWeatherObject = JsonObject->GetObjectField("current_weather");
+				const TSharedPtr<FJsonObject> &CurrentWeatherObject = JsonObject->GetObjectField("current_weather");
 				FWeatherReportData weatherReportData;
 
 				CurrentWeatherObject->TryGetStringField("time", weatherReportData.time);
@@ -70,14 +70,13 @@ void AWeatherReporter::ProcessWeatherReportResponse(FHttpRequestPtr request, FHt
 				CurrentWeatherObject->TryGetNumberField("weathercode", weatherReportData.weathercode);
 				CurrentWeatherObject->TryGetNumberField("windspeed", weatherReportData.windspeed);
 				CurrentWeatherObject->TryGetNumberField("winddirection", weatherReportData.winddirection);
-			
+
 				OnWeatherReportDelegate.Broadcast(weatherReportData);
 			}
 		}
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Weather Report HTTP Request Unsuccessful"));
-    }
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Weather Report HTTP Request Unsuccessful"));
+	}
 }
-
